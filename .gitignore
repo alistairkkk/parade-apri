@@ -10,6 +10,9 @@
 .env.local
 .env*.local
 
+# konfigurasi editor / MCP (berisi token rahasia: JANGAN di-commit)
+/.vscode/
+
 # lain-lain
 .DS_Store
 *.log
