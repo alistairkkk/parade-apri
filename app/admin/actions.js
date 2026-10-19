@@ -58,3 +58,96 @@ export async function logout() {
 
 export const keluar = logout;
 
+/**
+ * Server Action untuk mengganti password admin yang sedang login.
+ * Memvalidasi minimal 8 karakter dan kesesuaian konfirmasi password.
+ */
+export async function gantiPassword(prevState, formData) {
+  const isActionState = formData instanceof FormData;
+  const data = isActionState ? formData : prevState;
+
+  const passwordBaru = data?.get ? data.get("password_baru") : null;
+  const konfirmasiPassword = data?.get ? data.get("konfirmasi_password") : null;
+
+  if (!passwordBaru || !konfirmasiPassword) {
+    return { error: "Password baru dan konfirmasi password wajib diisi." };
+  }
+
+  const passwordBaruStr = String(passwordBaru);
+  const konfirmasiPasswordStr = String(konfirmasiPassword);
+
+  if (passwordBaruStr.length < 8) {
+    return { error: "Password baru minimal 8 karakter." };
+  }
+
+  if (passwordBaruStr !== konfirmasiPasswordStr) {
+    return { error: "Konfirmasi password tidak cocok." };
+  }
+
+  const supabase = await createSupabaseSessionClient();
+  const {
+    data: { user },
+    error: userError,
+  } = await supabase.auth.getUser();
+
+  if (userError || !user) {
+    return { error: "Anda harus login terlebih dahulu." };
+  }
+
+  const { error } = await supabase.auth.updateUser({
+    password: passwordBaruStr,
+  });
+
+  if (error) {
+    return { error: error.message || "Gagal mengganti password." };
+  }
+
+  return { success: "Password berhasil diganti." };
+}
+/**
+ * Server Action untuk mengganti password admin yang sedang login.
+ * Memvalidasi minimal 8 karakter dan kesesuaian konfirmasi password.
+ */
+export async function gantiPassword(prevState, formData) {
+  const isActionState = formData instanceof FormData;
+  const data = isActionState ? formData : prevState;
+
+  const passwordBaru = data?.get ? data.get("password_baru") : null;
+  const konfirmasiPassword = data?.get ? data.get("konfirmasi_password") : null;
+
+  if (!passwordBaru || !konfirmasiPassword) {
+    return { error: "Password baru dan konfirmasi password wajib diisi." };
+  }
+
+  const passwordBaruStr = String(passwordBaru);
+  const konfirmasiPasswordStr = String(konfirmasiPassword);
+
+  if (passwordBaruStr.length < 8) {
+    return { error: "Password baru minimal 8 karakter." };
+  }
+
+  if (passwordBaruStr !== konfirmasiPasswordStr) {
+    return { error: "Konfirmasi password tidak cocok." };
+  }
+
+  const supabase = await createSupabaseSessionClient();
+  const {
+    data: { user },
+    error: userError,
+  } = await supabase.auth.getUser();
+
+  if (userError || !user) {
+    return { error: "Anda harus login terlebih dahulu." };
+  }
+
+  const { error } = await supabase.auth.updateUser({
+    password: passwordBaruStr,
+  });
+
+  if (error) {
+    return { error: error.message || "Gagal mengganti password." };
+  }
+
+  return { success: "Password berhasil diganti." };
+}
+
